@@ -1,0 +1,109 @@
+# Component Architecture Guidelines
+
+## Component Organization
+
+### File Structure
+```
+src/
+├── components/
+│   ├── ui/                 # Shadcn UI components
+│   ├── custom/            # Custom reusable components
+│   └── forms/             # Form-specific components
+└── app/                   # Page components
+```
+
+### Component Types
+
+#### Server Components (Default)
+- Use Server Components by default for all components
+- Only convert to Client Components when necessary
+- Server Components can't use hooks, event handlers, or browser APIs
+- Use Server Components for data fetching and static content
+
+#### Client Components
+- Use `"use client"` directive only when needed
+- Convert to Client Component for:
+  - Interactivity (onClick, onChange, etc.)
+  - React hooks (useState, useEffect, etc.)
+  - Browser APIs (localStorage, window, etc.)
+  - Event listeners
+
+### Shadcn UI Integration
+- Use Shadcn UI components as the foundation
+- Don't customize Shadcn UI components unless required
+- Follow Shadcn UI's design system and patterns
+- Use proper component composition with Shadcn UI
+
+### Component Patterns
+
+#### Atomic Design
+- **Atoms**: Basic building blocks (Button, Input, Label)
+- **Molecules**: Simple combinations (SearchBar, FormField)
+- **Organisms**: Complex components (Header, Footer, Sidebar)
+- **Templates**: Page layouts and structure
+- **Pages**: Complete page implementations
+
+#### Props Interface
+```typescript
+interface ComponentProps {
+  // Required props
+  title: string;
+  
+  // Optional props with defaults
+  variant?: 'default' | 'outline' | 'ghost';
+  
+  // Event handlers
+  onSubmit?: (data: FormData) => void;
+  
+  // Children
+  children?: React.ReactNode;
+}
+```
+
+### Error Handling
+- Implement proper error boundaries
+- Use proper loading states
+- Handle edge cases gracefully
+- Provide meaningful error messages
+
+### Performance
+- Use React.memo for expensive components
+- Implement proper key props for lists
+- Use dynamic imports for code splitting
+- Optimize re-renders with proper dependencies
+
+### Accessibility
+- Use semantic HTML elements
+- Implement proper ARIA attributes
+- Ensure keyboard navigation
+- Provide proper focus management
+- Use proper color contrast ratios
+
+### Styling Guidelines
+- Use Tailwind CSS utility classes
+- Follow mobile-first responsive design
+- Maintain consistent spacing and typography
+- Use CSS custom properties for theming
+- Implement proper dark mode support
+
+### State Management
+- Use local state for component-specific data
+- Use Server State for server-side data
+- Implement proper loading and error states
+- Use optimistic updates where appropriate
+
+### Form Components
+- Use next-safe-action for form handling
+- Implement proper validation with Zod
+- Use proper form accessibility patterns
+- Handle form submission states properly
+
+### Data Fetching
+- Use Server Components for initial data fetching
+- Implement proper caching strategies
+- Use SWR or React Query for client-side data
+- Handle loading and error states properly
+description:
+globs:
+alwaysApply: false
+---
