@@ -1,10 +1,13 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import { Header } from "./_components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "~/components/theme-provider";
+import { Toaster } from "sonner";
+
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -12,9 +15,9 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-const geist = Geist({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-inter",
 });
 
 export default function RootLayout({
@@ -22,10 +25,18 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${geist.variable}`}>
-        <body>
-          <Header />
-          {children}
+      <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+        <body className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            {children}
+            <Toaster theme="dark" />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
