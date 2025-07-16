@@ -12,21 +12,15 @@ export function Header() {
         <div className="bg-gradient-to-b from-gray-600/80 via-gray-600/60 to-gray-600/65 backdrop-blur-xl border-b border-gray-600/50 shadow-2xl">
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo section with enhanced styling */}
-            <Link 
-              href="/" 
-              className="flex items-center space-x-3 group relative"
-            >
-              {/* Subtle glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/10 to-blue-400/10 rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              {/* Logo container with lighter depth */}
-              <div className="relative bg-gradient-to-br from-gray-700/50 to-gray-800/50 rounded-lg p-2 border border-gray-500/50 shadow-lg backdrop-blur-sm">
-                <Logo />
-              </div>
-              
-              {/* Hover effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/5 to-blue-400/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </Link>
+                          <Link 
+                href="/" 
+                className="flex items-center space-x-3 relative"
+              >
+                {/* Logo container */}
+                <div className="relative p-2">
+                  <Logo />
+                </div>
+              </Link>
 
             {/* Navigation and auth section */}
             <div className="flex items-center gap-4">

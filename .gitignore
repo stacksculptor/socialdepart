@@ -49,3 +49,6 @@ yarn-error.log*
 
 # uploaded PDF files
 /public/pdfs/
+
+# cursor configuration
+/.cursor
