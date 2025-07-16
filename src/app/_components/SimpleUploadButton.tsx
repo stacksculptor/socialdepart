@@ -11,7 +11,7 @@ import { useState } from "react";
 interface UploadCallbacks {
     onUploadBegin?: () => void;
     onUploadError?: (error: Error) => void;
-    onClientUploadComplete?: () => void;
+    onClientUploadComplete?: (res?: any) => void;
 }
 
 const useUploadThingInputProps = (endpoint: "pdfUploader", callbacks?: UploadCallbacks) => {
@@ -86,11 +86,15 @@ export function SimpleUploadButton({documentType}: {documentType: string}) {
             toast.dismiss("upload-begin");
             toast.error("Upload failed");
         },
-        onClientUploadComplete() {
+        onClientUploadComplete(res) {
             setIsUploading(true);
             toast.dismiss("upload-begin");
             toast("Upload complete!");
-            // router.refresh();
+            
+            // Redirect to chat page if we have the PDF ID
+            if (res && res[0] && res[0].response && res[0].response.pdfId) {
+                router.push(`/chat/${res[0].response.pdfId}`);
+            }
         },
     });
 
