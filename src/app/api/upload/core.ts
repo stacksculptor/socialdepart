@@ -1,9 +1,17 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
+import { z } from "zod";
 
 const f = createUploadthing();
 
 const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+
+// Validation schema for upload request
+const uploadSchema = z.object({
+  fileName: z.string().min(1),
+  fileType: z.string().min(1),
+  fileSize: z.number().positive(),
+});
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -25,6 +33,14 @@ export const ourFileRouter = {
 
       // If you throw, the user will not be able to upload
       if (!user) throw new UploadThingError("Unauthorized");
+
+      // Parse and validate request body
+      const body = await req.json();
+      try {
+        uploadSchema.parse(body);
+      } catch (error) {
+        throw new UploadThingError("Invalid request body");
+      }
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { userId: user.id };
