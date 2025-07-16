@@ -1,14 +1,16 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/upload(.*)'])
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/upload(.*)', '/generate(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, redirectToSignIn } = await auth()
+  const { userId } = await auth()
 
   if (!userId && isProtectedRoute(req)) {
-    // Add custom logic to run before redirecting
-
-    return redirectToSignIn()
+    // Redirect to sign-in page with proper return URL
+    const signInUrl = new URL('/sign-in', req.url)
+    signInUrl.searchParams.set('redirect_url', req.url)
+    
+    return Response.redirect(signInUrl)
   }
 })
 
