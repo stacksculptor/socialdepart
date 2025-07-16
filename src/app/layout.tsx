@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
-        <body className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+        <body className="bg-gradient-to-br from-purple-950 via-purple-900 to-purple-950">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

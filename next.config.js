@@ -5,6 +5,11 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+    images: {
+        remotePatterns: [{ hostname: "upgfupzy8l.ufs.sh" }]
+    },
+    serverExternalPackages: ['pdf2json']
+};
 
 export default config;

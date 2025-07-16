@@ -1,29 +1,60 @@
-# Create T3 App
+# T3 Gallery
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A Next.js application built with the T3 stack for PDF upload and marketing strength generation.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- PDF upload with authentication
+- Marketing strength generation using OpenAI
+- User authentication with Clerk
+- Modern UI with Shadcn UI and Tailwind CSS
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Setup
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+1. Install dependencies:
+```bash
+pnpm install
+```
 
-## Learn More
+2. Set up your environment variables:
+```bash
+cp .env.example .env
+```
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+Add the following to your `.env` file:
+```env
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/t3gallery"
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+# OpenAI API Key (required for marketing strength generation)
+OPENAI_API_KEY="your-openai-api-key-here"
+```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+3. Set up the database:
+```bash
+pnpm db:push
+```
 
-## How do I deploy this?
+4. Start the development server:
+```bash
+pnpm dev
+```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## Marketing Strength Generation
+
+The application includes a marketing strength generation feature that uses OpenAI's GPT-4 model to create compelling marketing content based on:
+
+- Campaign parameters (selected episodes, goals, KPIs)
+- Audience profile (gender, ethnicity, age, preferences)
+
+The system generates 3 unique variations of marketing strength content, each optimized for different use cases and perspectives.
+
+## Tech Stack
+
+- **Framework**: Next.js 15.4.1 with App Router
+- **Authentication**: Clerk
+- **Database**: PostgreSQL with Prisma
+- **UI**: Shadcn UI + Tailwind CSS
+- **AI**: OpenAI GPT-4
+- **Validation**: Zod
+- **Actions**: Server Actions with next-safe-action

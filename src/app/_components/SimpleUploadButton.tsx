@@ -7,11 +7,13 @@ import { Button } from "~/components/ui/button";
 import { Plus } from "lucide-react";
 import { Label } from "~/components/ui/label";
 import { useState } from "react";
+import type { ClientUploadedFileData } from "uploadthing/types";
+import type { OurFileRouter } from "~/app/api/uploadthing/core";
 
 interface UploadCallbacks {
     onUploadBegin?: () => void;
     onUploadError?: (error: Error) => void;
-    onClientUploadComplete?: (res?: any) => void;
+    onClientUploadComplete?: (res: ClientUploadedFileData<OurFileRouter>[]) => void;
 }
 
 const useUploadThingInputProps = (endpoint: "pdfUploader", callbacks?: UploadCallbacks) => {
@@ -67,33 +69,37 @@ function LoadingSpinnerSVG() {
 export function SimpleUploadButton({documentType}: {documentType: string}) {
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isUploading, setIsUploading] = useState<Boolean | null>(false);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
     const router = useRouter();
 
     const { startUpload, isUploading: uploadThingIsUploading } = useUploadThingInputProps("pdfUploader", {
         onUploadBegin() {
-            toast(
-                <div className="flex items-center gap-2 text-white">
-                    <LoadingSpinnerSVG /> <span className="text-lg">Uploading...</span>
-                </div>,
-                {
-                    duration: 100000,
-                    id: "upload-begin",
-                },
-            );
         },
         onUploadError(error: Error) {
-            toast.dismiss("upload-begin");
             toast.error("Upload failed");
         },
-        onClientUploadComplete(res) {
+        onClientUploadComplete(res: ClientUploadedFileData<OurFileRouter>[]) {
             setIsUploading(true);
-            toast.dismiss("upload-begin");
             toast("Upload complete!");
             
-            // Redirect to chat page if we have the PDF ID
-            if (res && res[0] && res[0].response && res[0].response.pdfId) {
-                router.push(`/chat/${res[0].response.pdfId}`);
+            // Store PDF data in session storage and redirect to generate page
+            if (res && res[0] && res[0].serverData) {
+                const serverData = res[0].serverData as Record<string, unknown>;
+                if ('pdfId' in serverData && 'localFileName' in serverData && res[0].url) {
+                    // Store PDF data securely in session storage
+                    const pdfData = {
+                        url: res[0].url,
+                        pdfId: serverData.pdfId,
+                        fileName: res[0].name,
+                        localFileName: serverData.localFileName,
+                        documentType: documentType, // Store the document type
+                        uploadTime: new Date().toISOString()
+                    };
+                    sessionStorage.setItem('currentPdfData', JSON.stringify(pdfData));
+                    router.push("/generate");
+                } else {
+                    router.push("/generate");
+                }
             }
         },
     });

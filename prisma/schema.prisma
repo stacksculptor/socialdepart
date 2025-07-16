@@ -22,3 +22,23 @@ model PDF {
     @@index([name])
     @@index([userId])
 }
+
+model MarketingStrength {
+    id        Int      @id @default(autoincrement())
+    episodes  String[] // Array of episode strings
+    goals     String   // Single goal string
+    kpis      String[] // Array of KPI strings
+    gender    String   // Single gender string
+    ethnicity String[] // Array of ethnicity strings
+    ages      String[] // Array of age range strings
+    fans      String[] // Array of fan preference strings
+    userId    String   // User ID for ownership
+    output1   String   // First marketing strength output
+    output2   String   // Second marketing strength output
+    output3   String   // Third marketing strength output
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([createdAt])
+}
