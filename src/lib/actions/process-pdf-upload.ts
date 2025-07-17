@@ -6,6 +6,7 @@ import { returnValidationErrors } from "next-safe-action";
 import { actionClient } from "~/lib/safe-action";
 import { currentUser } from "@clerk/nextjs/server";
 import { pdfToText } from "pdf-ts";
+import { ERROR_MESSAGES } from "~/lib/constants";
 
 // Schema for the input data
 const processPdfUploadSchema = z.object({
@@ -31,6 +32,20 @@ const processPdfUploadResponseSchema = z.object({
   analyzedData: extractedDataSchema,
 });
 
+
+interface OpenAIMessage {
+  role: string;
+  content: string;
+}
+
+interface OpenAIChoice {
+  message: OpenAIMessage;
+}
+
+interface OpenAIResponse {
+  choices?: OpenAIChoice[];
+}
+
 export const processPdfUpload = actionClient
   .inputSchema(processPdfUploadSchema)
   .outputSchema(processPdfUploadResponseSchema)
@@ -39,13 +54,13 @@ export const processPdfUpload = actionClient
       // Check authentication
       const user = await currentUser();
       if (!user) {
-        throw new Error("Unauthorized");
+        throw new Error(ERROR_MESSAGES.UNAUTHORIZED);
       }
 
       // Fetch the PDF from the remote URL
       const response = await fetch(data.fileUrl);
       if (!response.ok) {
-        throw new Error(`Failed to fetch PDF from URL: ${data.fileUrl}`);
+        throw new Error(`${ERROR_MESSAGES.FILE_NOT_FOUND}: ${data.fileUrl}`);
       }
       const arrayBuffer = await response.arrayBuffer();
       const dataBuffer = Buffer.from(arrayBuffer);
@@ -53,11 +68,11 @@ export const processPdfUpload = actionClient
       // Extract text from PDF using pdf-parse
       const extractedText: string = await pdfToText(dataBuffer);
 
-      console.log("Extracted text length:", extractedText.length);
-      console.log("First 200 characters:", extractedText.substring(0, 200));
-
       // Analyze the extracted text with OpenAI
-      const analyzedData = await analyzePdfContent(extractedText, data.documentType);
+      const analyzedData = await analyzePdfContent(
+        extractedText,
+        data.documentType,
+      );
 
       return {
         fileName: data.fileUrl.split("/").pop() ?? "unknown.pdf",
@@ -65,33 +80,18 @@ export const processPdfUpload = actionClient
         analyzedData,
       };
     } catch (error) {
-      console.error("Error processing PDF upload:", error);
-      
       // Return a more specific error message
       if (error instanceof Error) {
-        return returnValidationErrors(processPdfUploadSchema, { 
-          _errors: [error.message] 
+        return returnValidationErrors(processPdfUploadSchema, {
+          _errors: [error.message],
         });
       }
-      
-      return returnValidationErrors(processPdfUploadSchema, { 
-        _errors: ["Failed to process PDF upload"] 
+
+      return returnValidationErrors(processPdfUploadSchema, {
+        _errors: [ERROR_MESSAGES.PROCESSING_FAILED],
       });
     }
   });
-
-interface OpenAIMessage {
-    role: string;
-    content: string;
-}
-
-interface OpenAIChoice {
-    message: OpenAIMessage;
-}
-
-interface OpenAIResponse {
-    choices?: OpenAIChoice[];
-}
 
 async function analyzePdfContent(text: string, documentType: string) {
   try {
@@ -125,12 +125,13 @@ If any information is not found in the document, provide reasonable defaults bas
         messages: [
           {
             role: "system",
-            content: "You are an AI assistant that extracts marketing campaign parameters from PDF documents. Always respond with valid JSON."
+            content:
+              "You are an AI assistant that extracts marketing campaign parameters from PDF documents. Always respond with valid JSON.",
           },
           {
             role: "user",
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.3,
         max_tokens: 1000,
@@ -138,10 +139,12 @@ If any information is not found in the document, provide reasonable defaults bas
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `OpenAI API error: ${response.status} ${response.statusText}`,
+      );
     }
 
-    const result = await response.json() as OpenAIResponse;
+    const result = (await response.json()) as OpenAIResponse;
     const generatedText = result.choices?.[0]?.message?.content;
 
     if (!generatedText) {
@@ -155,12 +158,15 @@ If any information is not found in the document, provide reasonable defaults bas
     }
 
     const parsedData = JSON.parse(jsonMatch[0]) as unknown;
-    
+
     // Validate and return the parsed data
     return extractedDataSchema.parse(parsedData);
   } catch (error) {
-    console.error("Error analyzing PDF content:", error);
-    
+    if (error instanceof Error) {
+      return returnValidationErrors(processPdfUploadSchema, {
+        _errors: [error.message],
+      });
+    }
     // Return default data if analysis fails
     return {
       selectedEpisodes: ["Sample Episode 1", "Sample Episode 2"],
@@ -169,7 +175,7 @@ If any information is not found in the document, provide reasonable defaults bas
       gender: "All",
       ethnicity: ["All ethnicities"],
       age: ["18 to 34 years old"],
-      fansOf: ["Drama", "Entertainment"]
+      fansOf: ["Drama", "Entertainment"],
     };
   }
-} 
+}

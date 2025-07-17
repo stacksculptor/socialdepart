@@ -26,9 +26,9 @@ export default function UploadPage() {
   // Show loading state while Clerk is loading
   if (!isLoaded) {
     return (
-      <div className="container mx-auto p-8 pt-24 max-w-2xl min-h-screen">
+      <div className="container mx-auto min-h-screen max-w-2xl p-8 pt-24">
         <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-purple-500"></div>
         </div>
       </div>
     );
@@ -37,21 +37,21 @@ export default function UploadPage() {
   // Show sign-in page if user is not authenticated
   if (!isSignedIn) {
     return (
-      <div className="container mx-auto p-8 pt-24 max-w-md min-h-screen">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-white mb-2">
+      <div className="container mx-auto min-h-screen max-w-md p-8 pt-24">
+        <div className="mb-6 text-center">
+          <h1 className="mb-2 text-2xl font-bold text-white">
             Sign in to Upload Documents
           </h1>
           <p className="text-muted-foreground">
             Please sign in to access the document upload feature.
           </p>
         </div>
-        <SignIn 
+        <SignIn
           appearance={{
             elements: {
               rootBox: "mx-auto",
               card: "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-            }
+            },
           }}
         />
       </div>
@@ -59,10 +59,10 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="container mx-auto p-8 pt-24 max-w-2xl min-h-screen">
+    <div className="container mx-auto min-h-screen max-w-2xl p-8 pt-24">
       <div className="space-y-4">
         {/* Header */}
-        <div className="text-center space-y-2">
+        <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold text-white">
             Upload a PDF document to Demo
           </h1>
@@ -71,12 +71,11 @@ export default function UploadPage() {
           </p>
         </div>
 
-        <Card className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <Card className="bg-background/95 supports-[backdrop-filter]:bg-background/60 backdrop-blur">
           <CardHeader>
             <CardTitle className="text-xl">Document Upload</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-
             {/* Select document type */}
             <div className="space-y-2">
               <Label>Select a document type</Label>

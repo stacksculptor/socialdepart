@@ -2,6 +2,7 @@ import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { z } from "zod";
+import { ERROR_MESSAGES } from "~/lib/constants";
 
 const f = createUploadthing();
 
@@ -12,18 +13,20 @@ export const ourFileRouter = {
     pdf: {
       maxFileSize: "32MB",
       maxFileCount: 1,
-    }
+    },
   })
-    .input(z.object({
-      documentType: z.string(),
-    }))
+    .input(
+      z.object({
+        documentType: z.string(),
+      }),
+    )
     // Set permissions and file types for this FileRoute
     .middleware(async ({ input }) => {
       // This code runs on your server before upload
       const user = await currentUser();
 
       // If you throw, the user will not be able to upload
-      if (!user) throw new Error("Unauthorized");
+      if (!user) throw new Error(ERROR_MESSAGES.UNAUTHORIZED);
 
       // Get document type from input
       const documentType = input.documentType;
@@ -33,7 +36,6 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
 
       try {
         // Save to Database
@@ -46,17 +48,15 @@ export const ourFileRouter = {
           },
         });
 
-        console.log("PDF saved to database with ID:", pdfRecord.id);
-        console.log("file url", file.ufsUrl);
-
         // Return only the uploadthing data (no local filename)
-        return { 
-          uploadedBy: metadata.userId, 
-          pdfId: pdfRecord.id
+        return {
+          uploadedBy: metadata.userId,
+          pdfId: pdfRecord.id,
         };
       } catch (error) {
-        console.error("Error saving PDF to database:", error);
-        throw new Error("Failed to save PDF");
+        throw new Error(
+          `${ERROR_MESSAGES.PROCESSING_FAILED}: ${error instanceof Error ? error.message : ERROR_MESSAGES.PROCESSING_FAILED}`,
+        );
       }
     }),
 } satisfies FileRouter;

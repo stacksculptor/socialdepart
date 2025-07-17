@@ -12,16 +12,19 @@ A Next.js application built with the T3 stack for PDF upload and marketing stren
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 2. Set up your environment variables:
+
 ```bash
 cp .env.example .env
 ```
 
 Add the following to your `.env` file:
+
 ```env
 # Database
 DATABASE_URL="postgresql://username:password@localhost:5432/t3gallery"
@@ -31,11 +34,13 @@ OPENAI_API_KEY="your-openai-api-key-here"
 ```
 
 3. Set up the database:
+
 ```bash
 pnpm db:push
 ```
 
 4. Start the development server:
+
 ```bash
 pnpm dev
 ```

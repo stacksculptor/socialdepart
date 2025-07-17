@@ -8,10 +8,10 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "~/components/theme-provider";
 import { Toaster } from "sonner";
 
-
 export const metadata: Metadata = {
   title: "Social Department",
-  description: "Social Department is a platform for creating social media content for your brand.",
+  description:
+    "Social Department is a platform for creating social media content for your brand.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

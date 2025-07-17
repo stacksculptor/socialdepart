@@ -11,9 +11,5 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <main className="flex flex-col text-white">
-      {children}
-    </main>
-  );
+  return <main className="flex flex-col text-white">{children}</main>;
 }

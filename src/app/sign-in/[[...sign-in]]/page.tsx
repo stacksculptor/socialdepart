@@ -2,17 +2,13 @@ import { SignIn } from "@clerk/nextjs";
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-purple-950 flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-950 via-purple-900 to-purple-950 p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-white mb-2">
-            Welcome Back
-          </h1>
-          <p className="text-gray-300">
-            Sign in to access your account
-          </p>
+        <div className="mb-6 text-center">
+          <h1 className="mb-2 text-2xl font-bold text-white">Welcome Back</h1>
+          <p className="text-gray-300">Sign in to access your account</p>
         </div>
-        <SignIn 
+        <SignIn
           appearance={{
             elements: {
               rootBox: "mx-auto",
@@ -25,10 +21,10 @@ export default function SignInPage() {
               footerActionLink: "text-purple-400 hover:text-purple-300",
               dividerLine: "bg-gray-600",
               dividerText: "text-gray-400",
-            }
+            },
           }}
         />
       </div>
     </div>
   );
-} 
+}
