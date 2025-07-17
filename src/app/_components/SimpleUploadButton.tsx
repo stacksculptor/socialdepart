@@ -26,9 +26,9 @@ const useUploadThingInputProps = (
   // Adapt callbacks to match the expected shape for useUploadThing
   const adaptedCallbacks = callbacks
     ? {
-        onUploadBegin: callbacks.onUploadBegin,
-        onUploadError: callbacks.onUploadError,
-        onClientUploadComplete: callbacks.onClientUploadComplete as
+      onUploadBegin: callbacks.onUploadBegin,
+      onUploadError: callbacks.onUploadError,
+      onClientUploadComplete: callbacks.onClientUploadComplete as
           | ((
               res: ClientUploadedFileData<{
                 uploadedBy: string;
@@ -36,7 +36,7 @@ const useUploadThingInputProps = (
               }>[],
             ) => void)
           | undefined,
-      }
+    }
     : undefined;
 
   const $ut = useUploadThing(endpoint, adaptedCallbacks);
