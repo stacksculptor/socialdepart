@@ -65,7 +65,7 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      pdf-parse:
+      pdf-parse-debugging-disabled:
         specifier: ^1.1.1
         version: 1.1.1
       pdf2json:
@@ -2242,8 +2242,8 @@ packages:
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
-  pdf-parse@1.1.1:
-    resolution: {integrity: sha512-v6ZJ/efsBpGrGGknjtq9J/oC8tZWq0KWL5vQrk2GlzLEQPUDB1ex+13Rmidl1neNN358Jn9EHZw5y07FFtaC7A==}
+  pdf-parse-debugging-disabled@1.1.1:
+    resolution: {integrity: sha512-pTPktRvyvLSj9zIS9DcOKYKcR7qeTqqyMkWjgYV7YglBmA9yrDJ1/rATOpXQoT5QcXKDYjEt4BSmZkJBcP1JDw==}
     engines: {node: '>=6.8.1'}
 
   pdf2json@3.1.6:
@@ -4958,7 +4958,7 @@ snapshots:
 
   path-parse@1.0.7: {}
 
-  pdf-parse@1.1.1:
+  pdf-parse-debugging-disabled@1.1.1:
     dependencies:
       debug: 3.2.7
       node-ensure: 0.0.0

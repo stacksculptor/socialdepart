@@ -4,7 +4,7 @@ import { z } from "zod";
 import { env } from "~/env";
 import { returnValidationErrors } from "next-safe-action";
 import { actionClient } from "~/lib/safe-action";
-import PdfParse from "pdf-parse";
+import PdfParse from "pdf-parse-debugging-disabled";
 import { currentUser } from "@clerk/nextjs/server";
 
 // Schema for the input data

@@ -65,15 +65,15 @@ export function SimpleUploadButton({documentType}: {documentType: string}) {
                 if (
                     typeof sd === 'object' && sd !== null &&
                     'pdfId' in sd && typeof (sd as { pdfId: unknown }).pdfId === 'number' &&
-                    res[0].url
+                    res[0].ufsUrl
                 ) {
                     const serverData: ServerData = {
                         pdfId: (sd as { pdfId: number }).pdfId,
-                        url: res[0].url,
+                        url: res[0].ufsUrl,
                     };
                     // Store PDF data securely in session storage
                     const pdfData = {
-                        url: res[0].url,
+                        url: res[0].ufsUrl,
                         pdfId: serverData.pdfId,
                         fileName: res[0].name,
                         documentType: documentType, // Store the document type
