@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { Button } from "~/components/ui/button";
 import { SimpleUploadButton } from "../_components/SimpleUploadButton";
 import { SignIn } from "@clerk/nextjs";
 
@@ -21,17 +19,9 @@ const documentTypes = [
   { value: "other", label: "Other document" },
 ];
 
-const seriesOptions = [
-  { value: "brief-history-future", label: "A Brief History Of The Future" },
-  { value: "new-series", label: "Add a new series..." },
-];
-
 export default function UploadPage() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [series, setSeries] = useState("");
   const [documentType, setDocumentType] = useState("");
   const { isSignedIn, isLoaded } = useAuth();
-  const router = useRouter();
 
   // Show loading state while Clerk is loading
   if (!isLoaded) {

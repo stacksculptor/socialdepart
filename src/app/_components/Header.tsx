@@ -1,5 +1,4 @@
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { Button } from "~/components/ui/button";
 import { Logo } from "./Logo";
 import Link from "next/link";
 
@@ -12,7 +11,7 @@ export function Header() {
         <div className="bg-gradient-to-b from-gray-600/80 via-gray-600/60 to-gray-600/65 backdrop-blur-xl border-b border-gray-600/50 shadow-2xl">
           <div className="flex items-center justify-between px-6 py-4">
             {/* Logo section with enhanced styling */}
-                          <Link 
+              <Link 
                 href="/" 
                 className="flex items-center space-x-3 relative"
               >

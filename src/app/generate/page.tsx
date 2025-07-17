@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
-import { ChevronRight, Play, FileText } from "lucide-react";
+import { Play, FileText } from "lucide-react";
 import { generateMarketingStrength } from "~/lib/actions/generate-marketing-strength";
 import { processPdfUpload } from "~/lib/actions/process-pdf-upload";
 import { toast } from "sonner";
@@ -41,13 +40,20 @@ interface ProcessedPdfData {
   uploadTime: string;
 }
 
+interface SessionPdfData {
+  url: string;
+  pdfId: number;
+  fileName: string;
+  localFileName: string;
+  documentType: string;
+  uploadTime: string;
+}
+
 export default function GeneratePage() {
   const [outputs, setOutputs] = useState<string[]>(["", "", ""]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [pdfData, setPdfData] = useState<ProcessedPdfData | null>(null);
-  const [lastGeneratedId, setLastGeneratedId] = useState<number | null>(null);
-  const router = useRouter();
 
   const [campaignData, setCampaignData] = useState<CampaignData>({
     name: "Winter 2025",
@@ -69,10 +75,10 @@ export default function GeneratePage() {
   // Process PDF data from session storage
   useEffect(() => {
     const processPdfFromSession = async () => {
-      const pdfDataStr = sessionStorage.getItem('currentPdfData');
+      const pdfDataStr: string | null = sessionStorage.getItem('currentPdfData');
       if (pdfDataStr) {
         try {
-          const pdfData = JSON.parse(pdfDataStr);
+          const pdfData: SessionPdfData = JSON.parse(pdfDataStr) as SessionPdfData;
           
           // Validate the stored data
           if (!pdfData.localFileName || typeof pdfData.localFileName !== 'string') {
@@ -101,9 +107,12 @@ export default function GeneratePage() {
           });
 
           if (result.validationErrors) {
-            const errorMessage = Object.values(result.validationErrors).join(", ");
+            // Convert all error values to strings safely, handling objects/arrays
+            const errorMessage = Object.values(result.validationErrors)
+              .map((v) => typeof v === "string" ? v : JSON.stringify(v))
+              .join(", ");
             console.error("Validation error:", errorMessage);
-            
+
             // If it's a file not found error, clear the session storage
             if (errorMessage.includes("not found") || errorMessage.includes("Invalid filename")) {
               sessionStorage.removeItem('currentPdfData');
@@ -184,7 +193,7 @@ export default function GeneratePage() {
       }
     };
 
-    processPdfFromSession();
+    void processPdfFromSession();
   }, []);
 
   const handleGenerate = async () => {
@@ -203,7 +212,6 @@ export default function GeneratePage() {
 
       if (result.data) {
         setOutputs(result.data.strengths);
-        setLastGeneratedId(result.data.id);
         toast.success(`Marketing strength generated successfully!`);
       } else if (result.validationErrors) {
         console.error("Validation errors:", result.validationErrors);

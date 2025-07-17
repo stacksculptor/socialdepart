@@ -1,8 +1,5 @@
 "use server";
 
-// Disable pdf-parse debug mode
-process.env.AUTO_KENT_DEBUG = "true";
-
 import { z } from "zod";
 import { env } from "~/env";
 import { returnValidationErrors } from "next-safe-action";
@@ -161,7 +158,7 @@ If any information is not found in the document, provide reasonable defaults bas
     }
 
     // Parse the JSON response
-    const jsonMatch = generatedText.match(/\{[\s\S]*\}/) as RegExpMatchArray | null;
+    const jsonMatch = /\{[\s\S]*\}/.exec(generatedText);
     if (!jsonMatch) {
       throw new Error("No JSON found in OpenAI response");
     }

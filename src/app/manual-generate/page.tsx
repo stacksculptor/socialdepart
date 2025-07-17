@@ -4,11 +4,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
-import { ChevronRight, Play, ArrowLeft, ArrowRight, X, Plus } from "lucide-react";
+import { ChevronRight, Play, ArrowLeft, ArrowRight, X } from "lucide-react";
 import { generateMarketingStrength } from "~/lib/actions/generate-marketing-strength";
 import { toast } from "sonner";
 import {
@@ -18,16 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-
-interface CampaignData {
-    selectedEpisodes: string[];
-    goals: string[];
-    kpis: string[];
-    gender: string;
-    ethnicity: string[];
-    ageRanges: string[];
-    fansOf: string[];
-}
 
 // Sample data for Step One
 const SAMPLE_EPISODES = [
@@ -123,7 +112,6 @@ export default function ManualGeneratePage() {
     const [currentStep, setCurrentStep] = useState(1);
     const [outputs, setOutputs] = useState<string[]>(["", "", ""]);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [lastGeneratedId, setLastGeneratedId] = useState<number | null>(null);
 
     // Step One State
     const [selectedEpisodes, setSelectedEpisodes] = useState<string[]>([]);
@@ -251,7 +239,6 @@ export default function ManualGeneratePage() {
 
             if (result.data) {
                 setOutputs(result.data.strengths);
-                setLastGeneratedId(result.data.id);
                 toast.success(`Marketing strength generated successfully!`);
             } else if (result.validationErrors) {
                 console.error("Validation errors:", result.validationErrors);

@@ -1,5 +1,4 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 import { z } from "zod";
@@ -26,7 +25,7 @@ export const ourFileRouter = {
       const user = await currentUser();
 
       // If you throw, the user will not be able to upload
-      if (!user) throw new UploadThingError("Unauthorized");
+      if (!user) throw new Error("Unauthorized");
 
       // Get document type from input
       const documentType = input.documentType;
@@ -37,7 +36,6 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       console.log("Upload complete for userId:", metadata.userId);
-      console.log("file!!!!!" ,file);
 
       try {
         // Create public/pdfs directory if it doesn't exist
@@ -53,7 +51,7 @@ export const ourFileRouter = {
         // Download the file from uploadthing and save to local storage
         const response = await fetch(file.ufsUrl);
         if (!response.ok) {
-          throw new UploadThingError(`Failed to download file from uploadthing: ${response.statusText}`);
+          throw new Error(`Failed to download file from uploadthing: ${response.statusText}`);
         }
         
         const fileBuffer = await response.arrayBuffer();
@@ -82,7 +80,7 @@ export const ourFileRouter = {
         };
       } catch (error) {
         console.error("Error saving PDF to database or local storage:", error);
-        throw new UploadThingError("Failed to save PDF to database or local storage");
+        throw new Error("Failed to save PDF");
       }
     }),
 } satisfies FileRouter;
