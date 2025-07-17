@@ -114,6 +114,19 @@ export const getMarketingStrengthHistory = actionClient
         }
     });
 
+interface OpenAIMessage {
+    role: string;
+    content: string;
+}
+
+interface OpenAIChoice {
+    message: OpenAIMessage;
+}
+
+interface OpenAIResponse {
+    choices?: OpenAIChoice[];
+}
+
 async function generateVariation(basePrompt: string, temperature: number): Promise<string> {
     try {
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -143,7 +156,7 @@ async function generateVariation(basePrompt: string, temperature: number): Promi
             throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
         }
 
-        const result = await response.json();
+        const result = await response.json() as OpenAIResponse;
         const generatedText = result.choices?.[0]?.message?.content;
 
         if (!generatedText) {

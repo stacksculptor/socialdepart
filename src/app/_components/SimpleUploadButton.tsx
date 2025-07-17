@@ -79,6 +79,11 @@ function LoadingSpinnerSVG() {
     );
 }
 
+interface ServerData {
+    pdfId: number;
+    localFileName: string;
+    url?: string;
+}
 
 export function SimpleUploadButton({documentType}: {documentType: string}) {
 
@@ -98,8 +103,18 @@ export function SimpleUploadButton({documentType}: {documentType: string}) {
             
             // Store PDF data in session storage and redirect to generate page
             if (res && res[0] && res[0].serverData) {
-                const serverData = res[0].serverData as Record<string, unknown>;
-                if ('pdfId' in serverData && 'localFileName' in serverData && res[0].url) {
+                const sd = res[0].serverData;
+                if (
+                    typeof sd === 'object' && sd !== null &&
+                    'pdfId' in sd && typeof (sd as { pdfId: unknown }).pdfId === 'number' &&
+                    'localFileName' in sd && typeof (sd as { localFileName: unknown }).localFileName === 'string' &&
+                    res[0].url
+                ) {
+                    const serverData: ServerData = {
+                        pdfId: (sd as { pdfId: number }).pdfId,
+                        localFileName: (sd as { localFileName: string }).localFileName,
+                        url: res[0].url,
+                    };
                     // Store PDF data securely in session storage
                     const pdfData = {
                         url: res[0].url,

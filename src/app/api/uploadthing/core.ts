@@ -21,7 +21,7 @@ export const ourFileRouter = {
       documentType: z.string(),
     }))
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req, input }) => {
+    .middleware(async ({ input }) => {
       // This code runs on your server before upload
       const user = await currentUser();
 
@@ -53,7 +53,7 @@ export const ourFileRouter = {
         // Download the file from uploadthing and save to local storage
         const response = await fetch(file.ufsUrl);
         if (!response.ok) {
-          throw new Error(`Failed to download file from uploadthing: ${response.statusText}`);
+          throw new UploadThingError(`Failed to download file from uploadthing: ${response.statusText}`);
         }
         
         const fileBuffer = await response.arrayBuffer();
@@ -82,7 +82,7 @@ export const ourFileRouter = {
         };
       } catch (error) {
         console.error("Error saving PDF to database or local storage:", error);
-        throw new UploadThingError("Failed to save PDF");
+        throw new UploadThingError("Failed to save PDF to database or local storage");
       }
     }),
 } satisfies FileRouter;

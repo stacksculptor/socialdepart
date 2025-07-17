@@ -92,6 +92,19 @@ export const processPdfUpload = actionClient
     }
   });
 
+interface OpenAIMessage {
+    role: string;
+    content: string;
+}
+
+interface OpenAIChoice {
+    message: OpenAIMessage;
+}
+
+interface OpenAIResponse {
+    choices?: OpenAIChoice[];
+}
+
 async function analyzePdfContent(text: string, documentType: string) {
   try {
     const prompt = `You are an AI assistant that analyzes PDF documents to extract marketing campaign parameters. Analyze the following PDF content and extract relevant information.
@@ -140,7 +153,7 @@ If any information is not found in the document, provide reasonable defaults bas
       throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
     }
 
-    const result = await response.json();
+    const result = await response.json() as OpenAIResponse;
     const generatedText = result.choices?.[0]?.message?.content;
 
     if (!generatedText) {
@@ -148,12 +161,12 @@ If any information is not found in the document, provide reasonable defaults bas
     }
 
     // Parse the JSON response
-    const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
+    const jsonMatch = generatedText.match(/\{[\s\S]*\}/) as RegExpMatchArray | null;
     if (!jsonMatch) {
       throw new Error("No JSON found in OpenAI response");
     }
 
-    const parsedData = JSON.parse(jsonMatch[0]);
+    const parsedData = JSON.parse(jsonMatch[0]) as unknown;
     
     // Validate and return the parsed data
     return extractedDataSchema.parse(parsedData);
