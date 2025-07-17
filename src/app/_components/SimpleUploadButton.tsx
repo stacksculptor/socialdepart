@@ -16,8 +16,22 @@ interface UploadCallbacks {
     onClientUploadComplete?: (res: ClientUploadedFileData<OurFileRouter>[]) => void;
 }
 
-const useUploadThingInputProps = (endpoint: "pdfUploader", callbacks?: UploadCallbacks) => {
-    const $ut = useUploadThing(endpoint, callbacks);
+const useUploadThingInputProps = (
+    endpoint: "pdfUploader",
+    callbacks?: UploadCallbacks
+) => {
+    // Adapt callbacks to match the expected shape for useUploadThing
+    const adaptedCallbacks = callbacks
+        ? {
+              onUploadBegin: callbacks.onUploadBegin,
+              onUploadError: callbacks.onUploadError,
+              onClientUploadComplete: callbacks.onClientUploadComplete as
+                  | ((res: ClientUploadedFileData<{ uploadedBy: string; pdfId: number; localFileName: string; }>[]) => void)
+                  | undefined,
+          }
+        : undefined;
+
+    const $ut = useUploadThing(endpoint, adaptedCallbacks);
 
     return {
         startUpload: $ut.startUpload,
