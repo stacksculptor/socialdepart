@@ -44,7 +44,6 @@ interface SessionPdfData {
   url: string;
   pdfId: number;
   fileName: string;
-  localFileName: string;
   documentType: string;
   uploadTime: string;
 }
@@ -81,18 +80,10 @@ export default function GeneratePage() {
           const pdfData: SessionPdfData = JSON.parse(pdfDataStr) as SessionPdfData;
           
           // Validate the stored data
-          if (!pdfData.localFileName || typeof pdfData.localFileName !== 'string') {
+          if (!pdfData.url || typeof pdfData.url !== 'string') {
             console.error('Invalid PDF data in session storage:', pdfData);
             sessionStorage.removeItem('currentPdfData');
             toast.error("Invalid PDF data found. Please upload a new PDF file.");
-            return;
-          }
-
-          // Check if the filename looks valid (should be a timestamp_filename.pdf format)
-          if (!/^\d+_.*\.pdf$/i.test(pdfData.localFileName)) {
-            console.error('Invalid filename format in session storage:', pdfData.localFileName);
-            sessionStorage.removeItem('currentPdfData');
-            toast.error("Invalid PDF filename format. Please upload a new PDF file.");
             return;
           }
 
@@ -102,7 +93,7 @@ export default function GeneratePage() {
           
           // Call the process-pdf-upload action
           const result = await processPdfUpload({
-            localFileName: pdfData.localFileName,
+            fileUrl: pdfData.url,
             documentType: pdfData.documentType || "marketing", // Use document type from session storage
           });
 
@@ -171,8 +162,6 @@ export default function GeneratePage() {
                 ? result.data!.analyzedData.fansOf 
                 : prev.fansOf,
             }));
-
-            toast.success("PDF processed successfully! Campaign parameters updated.");
           } else {
             throw new Error("No data returned from PDF processing");
           }

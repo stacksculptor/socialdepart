@@ -26,7 +26,7 @@ const useUploadThingInputProps = (
               onUploadBegin: callbacks.onUploadBegin,
               onUploadError: callbacks.onUploadError,
               onClientUploadComplete: callbacks.onClientUploadComplete as
-                  | ((res: ClientUploadedFileData<{ uploadedBy: string; pdfId: number; localFileName: string; }>[]) => void)
+                  | ((res: ClientUploadedFileData<{ uploadedBy: string; pdfId: number; }>[]) => void)
                   | undefined,
           }
         : undefined;
@@ -41,7 +41,6 @@ const useUploadThingInputProps = (
 
 interface ServerData {
     pdfId: number;
-    localFileName: string;
     url?: string;
 }
 
@@ -66,12 +65,10 @@ export function SimpleUploadButton({documentType}: {documentType: string}) {
                 if (
                     typeof sd === 'object' && sd !== null &&
                     'pdfId' in sd && typeof (sd as { pdfId: unknown }).pdfId === 'number' &&
-                    'localFileName' in sd && typeof (sd as { localFileName: unknown }).localFileName === 'string' &&
                     res[0].url
                 ) {
                     const serverData: ServerData = {
                         pdfId: (sd as { pdfId: number }).pdfId,
-                        localFileName: (sd as { localFileName: string }).localFileName,
                         url: res[0].url,
                     };
                     // Store PDF data securely in session storage
@@ -79,7 +76,6 @@ export function SimpleUploadButton({documentType}: {documentType: string}) {
                         url: res[0].url,
                         pdfId: serverData.pdfId,
                         fileName: res[0].name,
-                        localFileName: serverData.localFileName,
                         documentType: documentType, // Store the document type
                         uploadTime: new Date().toISOString()
                     };

@@ -4,14 +4,12 @@ import { z } from "zod";
 import { env } from "~/env";
 import { returnValidationErrors } from "next-safe-action";
 import { actionClient } from "~/lib/safe-action";
-import { join } from "path";
-import { readFileSync, existsSync } from "fs";
 import PdfParse from "pdf-parse";
 import { currentUser } from "@clerk/nextjs/server";
 
 // Schema for the input data
 const processPdfUploadSchema = z.object({
-  localFileName: z.string().min(1, "Local file name is required"),
+  fileUrl: z.string().min(1, "File URL is required"),
   documentType: z.string().min(1, "Document type is required"),
 });
 
@@ -44,23 +42,17 @@ export const processPdfUpload = actionClient
         throw new Error("Unauthorized");
       }
 
-      // Construct the file path in public/pdfs
-      const pdfsDir = join(process.cwd(), "public", "pdfs");
-      const filePath = join(pdfsDir, data.localFileName);
-
-      // Check if file exists
-      if (!existsSync(filePath)) {
-        console.error(`File not found: ${filePath}`);
-        console.error(`Current working directory: ${process.cwd()}`);
-        console.error(`PDFs directory: ${pdfsDir}`);
-        console.error(`Requested filename: ${data.localFileName}`);
-        throw new Error(`PDF file not found: ${data.localFileName}. Please upload a new PDF file.`);
+      // Fetch the PDF from the remote URL
+      const response = await fetch(data.fileUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch PDF from URL: ${data.fileUrl}`);
       }
+      const arrayBuffer = await response.arrayBuffer();
+      const dataBuffer = Buffer.from(arrayBuffer);
 
       // Extract text from PDF using pdf-parse
-      const dataBuffer = readFileSync(filePath);
-      const pdfData = PdfParse(dataBuffer);
-      const extractedText = (await pdfData).text;
+      const pdfData = await PdfParse(dataBuffer);
+      const extractedText = pdfData.text;
 
       console.log("Extracted text length:", extractedText.length);
       console.log("First 200 characters:", extractedText.substring(0, 200));
@@ -69,7 +61,7 @@ export const processPdfUpload = actionClient
       const analyzedData = await analyzePdfContent(extractedText, data.documentType);
 
       return {
-        fileName: data.localFileName,
+        fileName: data.fileUrl.split("/").pop() ?? "unknown.pdf",
         extractedText,
         analyzedData,
       };
