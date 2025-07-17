@@ -23,6 +23,7 @@ const useUploadThingInputProps = (
     // Adapt callbacks to match the expected shape for useUploadThing
     const adaptedCallbacks = callbacks
         ? {
+              onUploadBegin: callbacks.onUploadBegin,
               onUploadError: callbacks.onUploadError,
               onClientUploadComplete: callbacks.onClientUploadComplete as
                   | ((res: ClientUploadedFileData<{ uploadedBy: string; pdfId: number; localFileName: string; }>[]) => void)
@@ -50,6 +51,9 @@ export function SimpleUploadButton({documentType}: {documentType: string}) {
     const router = useRouter();
 
     const { startUpload, isUploading: uploadThingIsUploading } = useUploadThingInputProps("pdfUploader", { 
+        onUploadBegin() {
+            console.log("Uploading...");
+        },
         onUploadError(error: Error) {
             toast.error(`Upload failed: ${error.message}`);
         },
