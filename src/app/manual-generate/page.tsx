@@ -129,8 +129,6 @@ export default function ManualGeneratePage() {
     const [selectedEpisodes, setSelectedEpisodes] = useState<string[]>([]);
     const [goals, setGoals] = useState<string[]>([]);
     const [kpis, setKpis] = useState<string[]>([]);
-    const [newGoal, setNewGoal] = useState("");
-    const [newKpi, setNewKpi] = useState("");
 
     // Step Two State
     const [gender, setGender] = useState("");
@@ -163,19 +161,7 @@ export default function ManualGeneratePage() {
         );
     };
 
-    const addCustomGoal = () => {
-        if (newGoal.trim() && !goals.includes(newGoal.trim())) {
-            setGoals(prev => [...prev, newGoal.trim()]);
-            setNewGoal("");
-        }
-    };
 
-    const addCustomKpi = () => {
-        if (newKpi.trim() && !kpis.includes(newKpi.trim())) {
-            setKpis(prev => [...prev, newKpi.trim()]);
-            setNewKpi("");
-        }
-    };
 
     const removeGoal = (goal: string) => {
         setGoals(prev => prev.filter(g => g !== goal));
@@ -375,23 +361,7 @@ export default function ManualGeneratePage() {
                         ))}
                     </div>
                     
-                    {/* Custom Goal Input */}
-                    <div className="flex gap-2">
-                        <Input
-                            value={newGoal}
-                            onChange={(e) => setNewGoal(e.target.value)}
-                            placeholder="Add custom goal..."
-                            className="flex-1 bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
-                            onKeyPress={(e) => e.key === 'Enter' && addCustomGoal()}
-                        />
-                        <Button
-                            onClick={addCustomGoal}
-                            size="sm"
-                            className="bg-purple-600 hover:bg-purple-700 text-white"
-                        >
-                            <Plus className="w-4 h-4" />
-                        </Button>
-                    </div>
+
 
                     {goals.length > 0 && (
                         <div className="pt-2">
@@ -441,23 +411,7 @@ export default function ManualGeneratePage() {
                         ))}
                     </div>
                     
-                    {/* Custom KPI Input */}
-                    <div className="flex gap-2">
-                        <Input
-                            value={newKpi}
-                            onChange={(e) => setNewKpi(e.target.value)}
-                            placeholder="Add custom KPI..."
-                            className="flex-1 bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-purple-500"
-                            onKeyPress={(e) => e.key === 'Enter' && addCustomKpi()}
-                        />
-                        <Button
-                            onClick={addCustomKpi}
-                            size="sm"
-                            className="bg-purple-600 hover:bg-purple-700 text-white"
-                        >
-                            <Plus className="w-4 h-4" />
-                        </Button>
-                    </div>
+
 
                     {kpis.length > 0 && (
                         <div className="pt-2">
