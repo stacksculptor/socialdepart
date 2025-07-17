@@ -4,8 +4,8 @@ import { z } from "zod";
 import { env } from "~/env";
 import { returnValidationErrors } from "next-safe-action";
 import { actionClient } from "~/lib/safe-action";
-import PdfParse from "pdf-parse-debugging-disabled";
 import { currentUser } from "@clerk/nextjs/server";
+import { pdfToText } from "pdf-ts";
 
 // Schema for the input data
 const processPdfUploadSchema = z.object({
@@ -51,8 +51,7 @@ export const processPdfUpload = actionClient
       const dataBuffer = Buffer.from(arrayBuffer);
 
       // Extract text from PDF using pdf-parse
-      const pdfData = await PdfParse(dataBuffer);
-      const extractedText = pdfData.text;
+      const extractedText: string = await pdfToText(dataBuffer);
 
       console.log("Extracted text length:", extractedText.length);
       console.log("First 200 characters:", extractedText.substring(0, 200));
