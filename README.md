@@ -1,4 +1,4 @@
-# T3 Gallery
+# Social Media
 
 A Next.js application built with the T3 stack for PDF upload and marketing strength generation.
 
