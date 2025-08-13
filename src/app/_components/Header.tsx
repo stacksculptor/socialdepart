@@ -1,6 +1,4 @@
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { Logo } from "./Logo";
-import Link from "next/link";
 
 export function Header() {
   return (
